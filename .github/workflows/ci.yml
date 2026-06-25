@@ -1,0 +1,72 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: smoke (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: syntax check
+        run: node --check acctinfo.js && node --check setup.js
+
+      - name: install (wires this runner's shells)
+        run: node setup.js install
+
+      - name: engine — status / list / render / non-TTY guard
+        shell: bash
+        run: |
+          REG="$HOME/.claude-accounts/profiles.json"
+          ENG="$HOME/.claude-accounts/acctinfo.js"
+          test -f "$REG" || { echo "registry missing"; exit 1; }
+          node "$ENG" status "$REG"
+          node "$ENG" list   "$REG"
+          node "$ENG" render "$REG" >/dev/null
+          printf '' | node "$ENG" ui "$REG"   # non-TTY must exit 0, not hang
+          echo "engine ok"
+
+      - name: bash — functions load
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          source "$HOME/.claude-accounts/switcher.sh"
+          for f in claude claude-add claude-acct claude-use claude-rm claude-personal; do
+            type "$f" >/dev/null 2>&1 || { echo "MISSING $f"; exit 1; }
+          done
+          claude-acct
+          echo "bash functions ok"
+
+      - name: zsh — functions load (macOS default shell)
+        if: runner.os == 'macOS'
+        run: |
+          zsh -c '
+            source "$HOME/.claude-accounts/switcher.sh"
+            for f in claude claude-add claude-acct claude-use claude-rm; do
+              type "$f" >/dev/null 2>&1 || { echo "MISSING $f"; exit 1; }
+            done
+            echo "zsh functions ok"
+          '
+
+      - name: powershell — functions load (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          . "$HOME\.claude-accounts\switcher.ps1"
+          foreach ($f in 'claude','claude-add','claude-acct','claude-use','claude-rm') {
+            if (-not (Get-Command $f -ErrorAction SilentlyContinue)) { Write-Error "MISSING $f"; exit 1 }
+          }
+          claude-acct
+          Write-Host 'powershell functions ok'

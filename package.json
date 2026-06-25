@@ -1,0 +1,30 @@
+{
+  "name": "claude-accounts",
+  "version": "1.0.0",
+  "description": "Run multiple Claude Code accounts from one terminal — arrow-key picker, fully isolated logins. By edunascimentt.dev.",
+  "bin": {
+    "claude-accounts": "setup.js"
+  },
+  "files": [
+    "acctinfo.js",
+    "switcher.ps1",
+    "switcher.sh",
+    "setup.js",
+    "install.ps1",
+    "install.sh",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"process.env.npm_config_global && console.log('\\n  claude-accounts installed globally. Run:  claude-accounts\\n')\""
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "keywords": ["claude", "claude-code", "accounts", "multi-account", "cli", "switcher", "profiles"],
+  "author": "Eduardo Nascimento (edunascimentt.dev)",
+  "license": "MIT",
+  "homepage": "https://github.com/edunascimentt/claude-accounts",
+  "repository": { "type": "git", "url": "git+https://github.com/edunascimentt/claude-accounts.git" },
+  "bugs": { "url": "https://github.com/edunascimentt/claude-accounts/issues" }
+}

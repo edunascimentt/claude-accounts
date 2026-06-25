@@ -1,7 +1,5 @@
 # Claude account switcher
 
-[![ci](https://github.com/edunascimentt/claude-accounts/actions/workflows/ci.yml/badge.svg)](https://github.com/edunascimentt/claude-accounts/actions/workflows/ci.yml)
-
 Run multiple Claude Code accounts from one terminal — a picker UI on `claude`,
 plus add/remove any number of accounts. Each account is a fully isolated config
 dir (own login, history, projects) via `CLAUDE_CONFIG_DIR`. Your default

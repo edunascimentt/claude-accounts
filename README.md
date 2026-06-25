@@ -76,14 +76,6 @@ claude-accounts status     list installed accounts
 claude-accounts uninstall  remove shell wiring (keeps your data)
 ```
 
-## Build a package to send
-
-```bash
-cd tools/claude-accounts
-npm pack          # -> claude-accounts-1.0.0.tgz  (≈10 kB, 9 files)
-```
-Send the `.tgz` (or zip the folder). Recipient runs install path **B**. That's it.
-
 ## Use
 
 | command | does |

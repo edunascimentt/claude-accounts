@@ -90,9 +90,13 @@ function status(profiles) {
   process.stdout.write(L.join('\n') + '\n');
 }
 
+// Seed a new account with TOOLING only — never personal instructions/memory.
+// CLAUDE.md is intentionally NOT copied: it carries your global instructions and
+// memory pointers, so copying it would make the new account read your personal
+// memory. Each account stays memory-isolated and builds its own.
 function seed(src, dst) {
   if (!fs.existsSync(src)) return;
-  for (const f of ['settings.json', 'settings.local.json', 'CLAUDE.md', 'statusline-command.ps1', 'statusline-command.sh']) {
+  for (const f of ['settings.json', 'settings.local.json', 'statusline-command.ps1', 'statusline-command.sh']) {
     try { if (fs.existsSync(path.join(src, f))) fs.copyFileSync(path.join(src, f), path.join(dst, f)); } catch (_) {}
   }
   for (const d of ['skills', 'agents']) {

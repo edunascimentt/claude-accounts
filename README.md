@@ -101,9 +101,11 @@ chosen account's config dir to stdout, which the shell uses to launch Claude.
   (`dir: "DEFAULT"`); others live at `~/.claude-<key>`.
 - Launching sets `CLAUDE_CONFIG_DIR` for that one process only (your shell env
   stays clean), so cookies/login/history are fully separated.
-- New accounts are seeded with copies of your `settings.json`, `skills/`,
-  `agents/`, `CLAUDE.md`, statusline — **not** your login or history. Plugins
-  are not copied (large); copy `~/.claude/plugins` in manually if you want them.
+- New accounts are seeded with copies of your **tooling only** — `settings.json`,
+  `skills/`, `agents/`, statusline — **not** your login, history, or `CLAUDE.md`.
+  `CLAUDE.md` is deliberately excluded so a new account never inherits your global
+  instructions/memory; each account stays **memory-isolated** and builds its own.
+  Plugins aren't copied (large); copy `~/.claude/plugins` in manually if you want them.
 - Registry: `~/.claude-accounts/profiles.json`. Engine: `acctinfo.js` (Node) —
   the single source of truth both shells call.
 

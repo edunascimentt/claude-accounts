@@ -10,8 +10,10 @@ _ca_bin() { command -v claude.exe >/dev/null 2>&1 && echo claude.exe || echo cla
 _ca_launch() {
     local dir="$1"; shift
     local bin; bin="$(_ca_bin)"
-    if [ "$dir" = "DEFAULT" ]; then ( unset CLAUDE_CONFIG_DIR; "$bin" "$@" )
-    else ( export CLAUDE_CONFIG_DIR="$dir"; "$bin" "$@" ); fi
+    # `command` bypasses the claude() wrapper function below — without it the
+    # lookup resolves to the function again and recurses forever.
+    if [ "$dir" = "DEFAULT" ]; then ( unset CLAUDE_CONFIG_DIR; command "$bin" "$@" )
+    else ( export CLAUDE_CONFIG_DIR="$dir"; command "$bin" "$@" ); fi
 }
 
 claude() {
@@ -26,7 +28,8 @@ claude() {
 claude-add() {
     if ! command -v node >/dev/null 2>&1; then printf '  Node.js required.\n'; return; fi
     local name="$1"
-    [ -z "$name" ] && read -rp "  new account name: " name
+    # zsh's read has no -p prompt flag — print the prompt separately
+    [ -z "$name" ] && { printf '  new account name: '; read -r name; }
     [ -z "$name" ] && { printf '  cancelled\n'; return; }
     printf '  creating account…\n'
     local dir; dir="$(node "$CA_INFO" add "$CA_REG" "$name" "$HOME")"
